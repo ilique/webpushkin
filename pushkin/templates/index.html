@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block header %}
+    <h3>Demonstration</h3>
+    <div><img src="{% static "pushkin/img/pushkin.as.png" %}"></div>
+    <hr>
+    <div>
+        <ul class="list-inline">
+            <li><a href="/admin">Admin</a></li>
+            <li>User: admin</li>
+            <li>Pass: sdn</li>
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <ul class="list-inline">
+            <li>Test:</li>
+            <li><a href="/demo/commands">commands</a></li>
+            <li><a href="/demo/services">services</a></li>
+        </ul>
+    </div>
+{% endblock %}

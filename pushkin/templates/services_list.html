@@ -1,0 +1,46 @@
+{% load pushkin_tags %}
+
+<style>
+    .service-device-and-commands {
+        padding-top: 10px;
+        padding-bottom: 35px;
+    }
+</style>
+
+{% if service and service_instructions %}
+    <pre>{{ service.instructions }}</pre>
+    <ol style="list-style: upper-roman; padding-top: 15px">
+        {# TODO: make this dict sorted #}
+        {% for device, command_groups in service_instructions.items %}
+            <li>
+                <h4>Commands {{ device }}</h4>
+
+                <div class="service-device-and-commands">
+                    <div class="form-group">
+                        {% if '[one or more]' in device %}
+                            <button class="btn btn-primary add-service-device">+ Add device</button>
+                        {% endif %}
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="device_ip_{{ forloop.counter0 }}">IP:</label>
+                        <input name="device_ip_{{ forloop.counter0 }}" id="device_ip_{{ forloop.counter0 }}" type="text" class="form-control device_ips">
+                        {% if model %}{{ model }}{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        {% if auth %}{{ auth }}{% endif %}
+                    </div>
+
+                    <ol style="list-style: decimal" class="device-command-groups">
+                        {% for command_group in command_groups %}
+                            <li>
+                                {{ command_group }}
+                                <div class="commands-container"></div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+{% endif %}

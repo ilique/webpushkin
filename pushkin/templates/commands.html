@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block header %}
+    <h3>Test commands</h3>
+{% endblock %}
+
+{% block output %}
+    {% if command_output %}
+        <div>
+            <pre>{{ command_output }}</pre>
+        </div>{% endif %}
+{% endblock %}
+
+{% block content %}
+    {#FIXME: url#}
+    <form action="/demo/commands" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="device_ip">IP:</label>
+            <input name="device_ip" id="device_ip" type="text" class="form-control">
+        </div>
+        {% if auth_params %}<div class="form-group">{{ auth_params }}</div>{% endif %}
+        {% if command_groups %}<div class="form-group">{{ command_groups }}</div>{% endif %}
+        <div class="form-group" id="commands-container"></div>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+{% endblock content %}
+
+{% block footer_scripts %}
+    <script src="{% static "pushkin/commands.js" %}" type="text/javascript"></script>
+{% endblock %}

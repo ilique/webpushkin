@@ -1,0 +1,25 @@
+{% load pushkin_tags %}
+
+<label>Commands:</label>
+<small>(executed in a row)</small>
+<input type="hidden" value="" name="commands" id="commands">
+
+{% if commands %}
+    <ol>
+        {% for command in commands %}
+            <li class="commands">
+                <ul class="list-inline">
+                    {% for line in command.text|split_by_argument %}
+                        {% if command.text|split_by_argument|length > 1 and forloop.counter != command.text|split_by_argument|length %}
+                            <li><span>{{ line }}</span><span><label><input type="text" value="arg{{ forloop.counter }}" name="arg{{ forloop.counter }}"></label></span></li>
+                        {% elif line %}
+                            <li><span>{{ line }}</span></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ol>
+{% else %}
+    <p>-------</p>
+{% endif %}
