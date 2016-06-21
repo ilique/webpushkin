@@ -1,6 +1,6 @@
 # Pushkin
 
-![Pushkin logo](https://raw.githubusercontent.com/ilique/pushkin/master/pushkin.as.png)
+![Pushkin logo](https://raw.githubusercontent.com/ilique/webpushkin/master/pushkin/static/pushkin/img/pushkin.as.png)
 
 ## What's the name, again?
 The name is **Pushkin A.S.** This stands for *Pushkin Automation Services*, *Pushkin Automated Configurations* or something else like this. Not to be confused with [Alexander Sergeyevich](https://en.wikipedia.org/wiki/Alexander_Pushkin), one of the most famous russian poets.
