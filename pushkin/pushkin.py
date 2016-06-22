@@ -301,7 +301,7 @@ class PushkinNetmiko:
                 login_token = self.telnet_cli_tokens[self.device_model]['login']
                 password_token = self.telnet_cli_tokens[self.device_model]['pass']
                 greet_token = self.telnet_cli_tokens[self.device_model]['greet']
-                enable_command = self.telnet_cli_tokens[self.device_model]['enable_command']
+                enable_command = self.telnet_cli_tokens[self.device_model]['enabled_command']
                 enabled_token = self.telnet_cli_tokens[self.device_model]['enabled']
 
                 tn = telnetlib.Telnet(self.ip)
