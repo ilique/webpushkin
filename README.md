@@ -19,7 +19,7 @@ This is [SDN](https://en.wikipedia.org/wiki/Software-defined_networking) tool. W
     (optional) mkdir pushkindemo && virtualenv pushkindemo && cd pushkindemo && source bin/activate
     pip install netmiko django django-sortedm2m
     git clone https://github.com/ilique/webpushkin.git
-    cd webpushkin && python manage.py migrate && python manage.py runserver
+    cd webpushkin && python manage.py createsuperuser && python manage.py migrate && python manage.py runserver
 
 ## Any support?
 
