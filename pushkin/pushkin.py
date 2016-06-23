@@ -342,10 +342,10 @@ class PushkinNetmiko:
 
         elif 'telnet' in self.protocol.lower():
             for command in commands:
+                # TODO: do it in a little more intelligent way
                 self.connection.write(command.encode('ascii') + b"\n")
-            # TODO: do it in a little more intelligent way
-            time.sleep(.3)
-            output = self.connection.read_very_eager().decode('ascii')
+                time.sleep(.3)
+                output += self.connection.read_very_eager().decode('ascii')
 
         return output
 
