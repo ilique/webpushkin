@@ -11,7 +11,7 @@
     <form action="/demo/commands" method="post" class="form-horizontal">
         {% csrf_token %}
         <div class="form-group">
-            <label for="device_ip">IP:</label>
+            <label for="device_ip">IP (one or multiple divided by comma):</label>
             <input name="device_ip" id="device_ip" type="text" class="form-control">
         </div>
         {% if auth_params %}<div class="form-group">{{ auth_params }}</div>{% endif %}

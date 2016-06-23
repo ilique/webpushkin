@@ -66,7 +66,7 @@ def ajax(request):
                 return render(request, 'services_list.html', context)
 
     elif request.method == 'POST':
-        output = 'no output'
+        output = 'Pushkin starts sending commands'
         service = request.POST.get('service')
         if service:
             service = json.loads(service)
@@ -90,15 +90,24 @@ def ajax(request):
         else:
             # FIXME: ajax dispatcher
             device_model = None
-            ip = request.POST.get("device_ip")
+            ips = request.POST.get("device_ip")
             auth = AuthParam.objects.get(id=request.POST.get('auth_param'))
             commands = json.loads(request.POST.get('commands'))
             command_group_id = request.POST.get('command_group')
             if command_group_id:
                 device_model = DeviceModel.objects.get(commandgroup__id=command_group_id)
-            if ip and auth and device_model and len(commands):
-                sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                                     device_model.name, auth.secret)
-                output = sdn.send_commands(commands)
+            if ips and auth and device_model and len(commands):
+                ips = ips.split(',')
+                if len(ips) > 1:
+                    timeout = 3.5
+                else:
+                    timeout = .6
+                for ip in ips:
+                    ip = ip.strip()
+                    if ip:
+                        sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                                             device_model.name, auth.secret)
+                        output += "\n\n\n" + ip + ":\n\n" + sdn.send_commands(commands, timeout=timeout)
 
+        output += "\n\nPushkin has done sending commands"
         return render(request, 'feedback.html', {'output': output})

@@ -333,7 +333,7 @@ class PushkinNetmiko:
 
         return False
 
-    def send_commands(self, commands):
+    def send_commands(self, commands, timeout=0):
 
         output = ''
 
@@ -344,7 +344,7 @@ class PushkinNetmiko:
             for command in commands:
                 # TODO: do it in a little more intelligent way
                 self.connection.write(command.encode('ascii') + b"\n")
-                time.sleep(.6)
+                time.sleep(timeout)
                 output += self.connection.read_very_eager().decode('ascii')
 
         return output
