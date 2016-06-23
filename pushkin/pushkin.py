@@ -344,7 +344,7 @@ class PushkinNetmiko:
             for command in commands:
                 # TODO: do it in a little more intelligent way
                 self.connection.write(command.encode('ascii') + b"\n")
-                time.sleep(.3)
+                time.sleep(.6)
                 output += self.connection.read_very_eager().decode('ascii')
 
         return output
