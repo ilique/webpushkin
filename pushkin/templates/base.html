@@ -13,7 +13,6 @@
 </head>
 <body>
 <div class="container">
-    {% block output %}{% endblock %}
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-10">
@@ -28,6 +27,7 @@
         <div class="col-xs-8">
             {% block content %}
             {% endblock %}
+            <div id="output-container" style="padding: 25px 50px"></div>
         </div>
         <div class="col-xs-2"></div>
     </div>

@@ -12,14 +12,18 @@ $(document).ready(function(){
         });
     });
 
-    $("form").submit(function(){
+    $("form").submit(function(e){
+        e.preventDefault();
+        var $output = $("#output-container");
         var result = [];
-
+        var device_ip = $("#device_ip").val();
+        var auth_param = $("#id_auth_param").val();
+        var command_group = $("#id_command_group").val();
         var $commands = $(".commands");
+        $output.html("<img src='"+STATIC_URL+"/img/loader.gif'>");
+
         $.each($commands, function(i, v){
-
             var line = '';
-
             var $parts = $(v).find("span");
             $.each($parts, function(i, v){
                 if ($(v).find("input").length) {
@@ -30,11 +34,17 @@ $(document).ready(function(){
             });
 
             result.push(line);
-
         });
 
-        console.log(encodeURI(result.join("\n")));
-        $("#commands").val(result.join("#delimeter#"));
+        $.post(AJAX_URL, {
+            commands: JSON.stringify(result),
+            device_ip: device_ip,
+            auth_param: auth_param,
+            command_group: command_group,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()}, function(data){
+
+            $output.html(data);
+        });
 
     });
 });

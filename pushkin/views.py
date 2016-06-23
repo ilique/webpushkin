@@ -13,26 +13,10 @@ def index(request):
 
 
 def test_commands(request):
-    device_model = None
     context = {
         'auth_params': AuthParamForm(),
         'command_groups': CommandGroupForm(command_group_name=None),
     }
-    if request.method == 'POST':
-        ip = request.POST.get("device_ip")
-        auth = AuthParam.objects.get(id=request.POST.get('auth_param'))
-        commands = request.POST.get('commands').split("#delimeter#")
-        command_group_id = request.POST.get('command_group')
-        if command_group_id:
-            device_model = DeviceModel.objects.get(commandgroup__id=command_group_id)
-        if ip and auth and device_model and len(commands):
-            sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                                 device_model.name, auth.secret)
-            output = sdn.send_commands(commands)
-            if output:
-                context['command_output'] = output
-            else:
-                context['command_output'] = 'command sent, but no output'
 
     return render(request, 'commands.html', context)
 
@@ -78,12 +62,13 @@ def ajax(request):
                     'auth': AuthParamForm(),
                     'model': DeviceModelForm,
                 }
+
                 return render(request, 'services_list.html', context)
 
     elif request.method == 'POST':
+        output = 'no output'
         service = request.POST.get('service')
         if service:
-            output = ''
             service = json.loads(service)
             for device in service:
                 if device['device_ip']:
@@ -102,4 +87,18 @@ def ajax(request):
 
                     output += "\n\n\n" + device['device_ip'] + ":\n\n" + sdn.send_commands(device['commands'])
 
-            return render(request, 'feedback.html', {'service': service, 'output': output})
+        else:
+            # FIXME: ajax dispatcher
+            device_model = None
+            ip = request.POST.get("device_ip")
+            auth = AuthParam.objects.get(id=request.POST.get('auth_param'))
+            commands = json.loads(request.POST.get('commands'))
+            command_group_id = request.POST.get('command_group')
+            if command_group_id:
+                device_model = DeviceModel.objects.get(commandgroup__id=command_group_id)
+            if ip and auth and device_model and len(commands):
+                sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                                     device_model.name, auth.secret)
+                output = sdn.send_commands(commands)
+
+        return render(request, 'feedback.html', {'output': output})
