@@ -271,6 +271,13 @@ class PushkinNetmiko:
                 'greet': 'Hello, Welcome to Raisecom',
                 'enabled_command': 'enable',
                 'enabled': '#',
+            },
+            'eltex': {
+                'login': 'User Name:',
+                'pass': 'Password:',
+                'greet': 'SW version',
+                'enabled_command': 'configure',
+                'enabled': '(config)#',
             }
         }
 
