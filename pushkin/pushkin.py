@@ -333,7 +333,7 @@ class PushkinNetmiko:
 
         return False
 
-    def send_commands(self, commands, timeout=0):
+    def send_commands(self, commands, timeout=.3):
 
         output = ''
 
