@@ -262,7 +262,7 @@ class PushkinNetmiko:
                 'login': 'Username:',
                 'pass': 'Password:',
                 'greet': '>',
-                'enable_command': 'system-view',
+                'enabled_command': 'system-view',
                 'enabled': ']',
             },
             'raisecom': {
@@ -342,8 +342,12 @@ class PushkinNetmiko:
 
         elif 'telnet' in self.protocol.lower():
             for command in commands:
+                command = command.strip()
                 # TODO: do it in a little more intelligent way
-                self.connection.write(command.encode('ascii') + b"\n")
+                if command == "$newline":
+                    self.connection.write(b"\n")
+                else:
+                    self.connection.write(command.encode('ascii') + b"\n")
                 time.sleep(timeout)
                 output += self.connection.read_very_eager().decode('ascii')
 
