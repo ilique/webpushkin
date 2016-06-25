@@ -17,7 +17,8 @@
 
                 <div class="service-device-and-commands">
                     <div class="form-group">
-                        {% if '[one or more]' in device %}
+                        {# FIXME: move this check from template #}
+                        {% if 'or more]' in device or 'или более]' in device %}
                             <button class="btn btn-primary add-service-device">+ Add device</button>
                         {% endif %}
                     </div>
