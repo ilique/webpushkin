@@ -286,7 +286,7 @@ class PushkinNetmiko:
         self.connection = self.connect()
 
     def connect(self):
-
+        # TODO: no route to host exception handling
         if self.protocol == 'ssh':
 
             device = {
