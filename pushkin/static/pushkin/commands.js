@@ -44,6 +44,8 @@ $(document).ready(function(){
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()}, function(data){
 
             $output.html(data);
+        }).fail(function(xhr, textStatus, errorThrown){
+            $output.html("<pre>"+xhr.responseText + textStatus + errorThrown+"</pre>");
         });
 
     });
