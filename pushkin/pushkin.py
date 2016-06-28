@@ -301,9 +301,10 @@ class PushkinNetmiko:
 
             try:
                 net_connect = ConnectHandler(**device)
-                return net_connect
             except paramiko.SSHException:
                 return False
+
+            return net_connect
 
         elif self.protocol == 'telnet':
 
