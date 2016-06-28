@@ -351,7 +351,7 @@ class PushkinNetmiko:
                 for command in commands:
                     command = command.strip()
                     # TODO: do it in a little more intelligent way
-                    if command == "$newline":
+                    if command == "newline":
                         self.connection.write(b"\n")
                     else:
                         self.connection.write(command.encode('ascii') + b"\n")
