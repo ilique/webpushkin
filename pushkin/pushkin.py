@@ -1,4 +1,5 @@
 import re
+import paramiko
 import telnetlib
 import time
 
@@ -298,9 +299,11 @@ class PushkinNetmiko:
             pushkin_device_mapper = self.ssh_device_models
             device['device_type'] = pushkin_device_mapper[self.device_model]
 
-            net_connect = ConnectHandler(**device)
-
-            return net_connect
+            try:
+                net_connect = ConnectHandler(**device)
+                return net_connect
+            except paramiko.SSHException:
+                return False
 
         elif self.protocol == 'telnet':
 
@@ -311,7 +314,10 @@ class PushkinNetmiko:
                 enable_command = self.telnet_cli_tokens[self.device_model]['enabled_command']
                 enabled_token = self.telnet_cli_tokens[self.device_model]['enabled']
 
-                tn = telnetlib.Telnet(self.ip)
+                try:
+                    tn = telnetlib.Telnet(self.ip)
+                except IOError:
+                    return False
 
                 tn.read_until(login_token.encode('ascii'))
                 tn.write(self.login.encode('ascii') + b"\n")
@@ -335,23 +341,27 @@ class PushkinNetmiko:
 
     def send_commands(self, commands, timeout=.3):
 
-        output = ''
+        if self.connection:
+            output = ''
 
-        if 'ssh' in self.protocol.lower():
-            output = self.connection.send_config_set(commands)
+            if 'ssh' in self.protocol.lower():
+                output = self.connection.send_config_set(commands)
 
-        elif 'telnet' in self.protocol.lower():
-            for command in commands:
-                command = command.strip()
-                # TODO: do it in a little more intelligent way
-                if command == "$newline":
-                    self.connection.write(b"\n")
-                else:
-                    self.connection.write(command.encode('ascii') + b"\n")
-                time.sleep(timeout)
-                output += self.connection.read_very_eager().decode('ascii')
+            elif 'telnet' in self.protocol.lower():
+                for command in commands:
+                    command = command.strip()
+                    # TODO: do it in a little more intelligent way
+                    if command == "$newline":
+                        self.connection.write(b"\n")
+                    else:
+                        self.connection.write(command.encode('ascii') + b"\n")
+                    time.sleep(timeout)
+                    output += self.connection.read_very_eager().decode('ascii')
 
-        return output
+            return output
+
+        else:
+            return 'No connection established'
 
 
 class Pushkin:
