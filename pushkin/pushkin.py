@@ -346,7 +346,10 @@ class PushkinNetmiko:
             output = ''
 
             if 'ssh' in self.protocol.lower():
-                output = self.connection.send_config_set(commands)
+                try:
+                    output = self.connection.send_config_set(commands)
+                except paramiko.SSHException:
+                    output = 'Connection timeout'
 
             elif 'telnet' in self.protocol.lower():
                 for command in commands:
