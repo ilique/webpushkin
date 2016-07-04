@@ -259,6 +259,13 @@ class PushkinNetmiko:
         }
 
         self.telnet_cli_tokens = {
+            'cisco': {
+                'login': 'Username:',
+                'pass': 'Password:',
+                'greet': '#',
+                'enabled_command': 'conf t',
+                'enabled': '(config)#',
+            },
             'huawei': {
                 'login': 'Username:',
                 'pass': 'Password:',
