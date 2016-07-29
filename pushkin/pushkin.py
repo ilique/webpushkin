@@ -256,6 +256,7 @@ class PushkinNetmiko:
             'huawei': 'huawei',
             'extreme': 'extreme',
             'juniper': 'juniper',
+            'linux': 'linux',
         }
 
         self.telnet_cli_tokens = {
