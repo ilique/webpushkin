@@ -355,7 +355,10 @@ class PushkinNetmiko:
 
             if 'ssh' in self.protocol.lower():
                 try:
-                    output = self.connection.send_config_set(commands)
+                    if (isinstance(commands, list)):
+                        output = self.connection.send_config_set(commands)
+                    elif (isinstance(commands, str)):
+                        output = self.connection.send_command(commands)
                 except paramiko.SSHException:
                     output = 'Connection timeout'
 

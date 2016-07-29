@@ -2,11 +2,13 @@ import json
 import re
 
 from django.shortcuts import render
+from django.http import JsonResponse
 
 from .forms import AuthParamForm, CommandGroupForm, ServiceForm, DeviceModelForm
 from .models import AuthParam, CommandGroup, Service, DeviceModel
 from .pushkin import PushkinNetmiko, Pushkin
 
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return render(request, 'index.html')
@@ -28,6 +30,25 @@ def test_services(request):
 def test_pushkin(request):
     pushkin = Pushkin()
     pushkin.execute_service('Simple client tunnel', 1, '1.1.1.1', '0/3', 'microsoft', 20000)
+
+
+@csrf_exempt
+def grep_voip_config(request):
+    output = []
+    ips = request.POST.get("ips").split(',')
+
+    if ips:
+        auth = AuthParam.objects.get(id=4)
+        command = CommandGroup.objects.get(id=20).commands.first()
+        device_model = DeviceModel.objects.get(commandgroup__id=20)
+        for ip in ips:
+            ip = ip.strip()
+            if ip:
+                sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                                     device_model.name, auth.secret)
+                output.append(sdn.send_commands(command.text, timeout=.6))
+
+    return JsonResponse(output, safe=False)
 
 
 def ajax(request):
