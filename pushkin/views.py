@@ -10,6 +10,7 @@ from .pushkin import PushkinNetmiko, Pushkin
 
 from django.views.decorators.csrf import csrf_exempt
 
+
 def index(request):
     return render(request, 'index.html')
 
@@ -35,18 +36,17 @@ def test_pushkin(request):
 @csrf_exempt
 def grep_voip_config(request):
     output = []
-    ips = request.POST.get("ips").split(',')
+    ip = request.POST.get("ip")
 
-    if ips:
+    if ip:
         auth = AuthParam.objects.get(id=4)
         command = CommandGroup.objects.get(id=20).commands.first()
         device_model = DeviceModel.objects.get(commandgroup__id=20)
-        for ip in ips:
-            ip = ip.strip()
-            if ip:
-                sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                                     device_model.name, auth.secret)
-                output.append(sdn.send_commands(command.text, timeout=.6))
+        ip = ip.strip()
+        if auth and command and device_model:
+            sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                                 device_model.name, auth.secret)
+            output.append(sdn.send_commands(command.text, timeout=.6))
 
     return JsonResponse(output, safe=False)
 
