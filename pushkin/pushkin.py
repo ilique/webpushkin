@@ -376,7 +376,7 @@ class PushkinNetmiko:
             return output
 
         else:
-            return 'No connection established'
+            return False
 
 
 class Pushkin:

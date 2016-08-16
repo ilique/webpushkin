@@ -39,14 +39,23 @@ def grep_voip_config(request):
     ip = request.POST.get("ip")
 
     if ip:
-        auth = AuthParam.objects.get(id=4)
-        command = CommandGroup.objects.get(id=20).commands.first()
-        device_model = DeviceModel.objects.get(commandgroup__id=20)
+        auth = AuthParam.objects.get(protocol='ssh', port=22, login='root', password='telross')
+        cg = CommandGroup.objects.get(name="grep 'option phone' from tau-8 config file")
+        command = cg.commands.first()
+        device_model = DeviceModel.objects.get(commandgroup__id=cg.id)
         ip = ip.strip()
         if auth and command and device_model:
             sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                                  device_model.name, auth.secret)
-            output.append(sdn.send_commands(command.text, timeout=.6))
+            result = sdn.send_commands(command.text, timeout=.6)
+            if not result:
+                auth = AuthParam.objects.get(protocol='ssh', port=22, login='root', password='35v89r6yh6fwe')
+                if auth:
+                    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                                         device_model.name, auth.secret)
+                result = sdn.send_commands(command.text, timeout=.6)
+
+            output.append(result)
 
     return JsonResponse(output, safe=False)
 
