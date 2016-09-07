@@ -36,11 +36,11 @@ def test_pushkin(request):
 @csrf_exempt
 def grep_voip_config(request):
     output = []
-    ip = request.POST.get("ip")
+    ip = request.GET.get("ip")
 
     if ip:
         auth = AuthParam.objects.get(protocol='ssh', port=22, login='root', password='telross')
-        cg = CommandGroup.objects.get(name="grep 'option phone' from tau-8 config file")
+        cg = CommandGroup.objects.get(name="grep phone from pbx config with port (fxs) number")
         command = cg.commands.first()
         device_model = DeviceModel.objects.get(commandgroup__id=cg.id)
         ip = ip.strip()
@@ -115,7 +115,11 @@ def ajax(request):
                     sdn = PushkinNetmiko(auth.protocol, auth.port, device['device_ip'],
                                          auth.login, auth.password, model.name, auth.secret)
 
-                    output += "\n\n\n" + device['device_ip'] + ":\n\n" + sdn.send_commands(device['commands'])
+                    out = sdn.send_commands(device['commands'])
+                    if not out:
+                        out = 'Could not connect'
+
+                    output += "\n\n\n" + device['device_ip'] + ":\n\n" + out
 
         else:
             # FIXME: ajax dispatcher
@@ -137,7 +141,12 @@ def ajax(request):
                     if ip:
                         sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                                              device_model.name, auth.secret)
-                        output += "\n\n\n" + ip + ":\n\n" + sdn.send_commands(commands, timeout=timeout)
+
+                        out = sdn.send_commands(commands, timeout=timeout)
+                        if not out:
+                            out = 'Could not connect'
+
+                        output += "\n\n\n" + ip + ":\n\n" + out
 
         output += "\n\nPushkin has done sending commands"
         return render(request, 'feedback.html', {'output': output})
