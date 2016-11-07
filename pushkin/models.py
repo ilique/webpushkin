@@ -2,6 +2,7 @@ from django.db import models
 from sortedm2m.fields import SortedManyToManyField
 
 
+# TODO: add name field
 class AuthParam(models.Model):
     protocol = models.CharField(max_length=255)
     port = models.IntegerField()
