@@ -158,3 +158,45 @@ def ajax(request):
 
         output += "\n\nPushkin has done sending commands"
         return render(request, 'feedback.html', {'output': output})
+
+
+def disable_interface(request):
+    model_name = request.GET.get("model")
+    ip = request.GET.get("ip")
+    name = request.GET.get("name")
+
+    # model = DeviceModel.objects.get(name=model_name)
+    auth = AuthParam.objects.get(id=2)
+
+    commands = [
+        'interface '+name,
+        'shutdown',
+    ]
+
+    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                         model_name, auth.secret)
+
+    result = sdn.send_commands(commands)
+
+    return JsonResponse({'messages': result})
+
+
+def enable_interface(request):
+    model_name = request.GET.get("model")
+    ip = request.GET.get("ip")
+    name = request.GET.get("name")
+
+    # model = DeviceModel.objects.get(name=model_name)
+    auth = AuthParam.objects.get(id=2)
+
+    commands = [
+        'interface '+name,
+        'no shutdown',
+    ]
+
+    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                         model_name, auth.secret)
+
+    result = sdn.send_commands(commands)
+
+    return JsonResponse({'messages': result})
