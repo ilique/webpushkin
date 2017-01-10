@@ -200,3 +200,21 @@ def enable_interface(request):
     result = sdn.send_commands(commands)
 
     return JsonResponse({'messages': result})
+
+
+@csrf_exempt
+def execute_commands(request):
+    body = json.loads(request.body.decode("utf8"))
+    auth_id = body["auth"]
+    ip = body["ip"]
+    model = body["model"]
+    commands = body["commands"]
+
+    auth = AuthParam.objects.get(id=auth_id)
+
+    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                     model, auth.secret)
+
+    result = sdn.send_commands(commands)
+
+    return JsonResponse({'messages': result})
