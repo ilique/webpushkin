@@ -168,15 +168,19 @@ def disable_interface(request):
     # model = DeviceModel.objects.get(name=model_name)
     auth = AuthParam.objects.get(id=2)
 
-    commands = [
-        'interface '+name,
-        'shutdown',
-    ]
+    try:
+        commands = []
+        cmds = CommandGroup.objects.get(name="Выключить интерфейс", device_model__iexact=model_name).commands
+        for cmd in cmds:
+            commands.append(cmd.replace('$interface', name))
 
-    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                         model_name, auth.secret)
+        sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                             model_name, auth.secret)
 
-    result = sdn.send_commands(commands)
+        result = sdn.send_commands(commands)
+
+    except CommandGroup.DoesNotExist:
+        result = 'Команда выключения не найдена'
 
     return JsonResponse({'messages': result})
 
@@ -189,15 +193,19 @@ def enable_interface(request):
     # model = DeviceModel.objects.get(name=model_name)
     auth = AuthParam.objects.get(id=2)
 
-    commands = [
-        'interface '+name,
-        'no shutdown',
-    ]
+    try:
+        commands = []
+        cmds = CommandGroup.objects.get(name="Включить интерфейс", device_model__iexact=model_name).commands
+        for cmd in cmds:
+            commands.append(cmd.replace('$interface', name))
 
-    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                         model_name, auth.secret)
+        sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                             model_name, auth.secret)
 
-    result = sdn.send_commands(commands)
+        result = sdn.send_commands(commands)
+
+    except CommandGroup.DoesNotExist:
+        result = 'Команда включения не найдена'
 
     return JsonResponse({'messages': result})
 
