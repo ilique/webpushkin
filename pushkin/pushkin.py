@@ -300,6 +300,7 @@ class PushkinNetmiko:
 
             device = {
                 'ip': self.ip,
+                'port': self.port,
                 'username': self.login,
                 'password': self.password
             }
