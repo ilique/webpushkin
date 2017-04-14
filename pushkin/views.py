@@ -170,9 +170,9 @@ def disable_interface(request):
 
     try:
         commands = []
-        cmds = CommandGroup.objects.get(name="Выключить интерфейс", device_model__iexact=model_name).commands
+        cmds = CommandGroup.objects.get(name="Выключить интерфейс", device_model__name__iexact=model_name).commands.all()
         for cmd in cmds:
-            commands.append(cmd.replace('$interface', name))
+            commands.append(cmd.text.replace('$interface', name))
 
         sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                              model_name, auth.secret)
@@ -195,9 +195,9 @@ def enable_interface(request):
 
     try:
         commands = []
-        cmds = CommandGroup.objects.get(name="Включить интерфейс", device_model__iexact=model_name).commands
+        cmds = CommandGroup.objects.get(name="Включить интерфейс", device_model__name__iexact=model_name).commands.all()
         for cmd in cmds:
-            commands.append(cmd.replace('$interface', name))
+            commands.append(cmd.text.replace('$interface', name))
 
         sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                              model_name, auth.secret)
@@ -221,7 +221,7 @@ def execute_commands(request):
     auth = AuthParam.objects.get(id=auth_id)
 
     sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                     model, auth.secret)
+                         model, auth.secret)
 
     result = sdn.send_commands(commands)
 
