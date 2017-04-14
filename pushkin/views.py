@@ -165,8 +165,7 @@ def disable_interface(request):
     ip = request.GET.get("ip")
     name = request.GET.get("name")
 
-    # model = DeviceModel.objects.get(name=model_name)
-    auth = AuthParam.objects.get(id=2)
+    auth = AuthParam.objects.get(devicemodel__name__iexact=model_name)
 
     try:
         commands = []
@@ -190,8 +189,7 @@ def enable_interface(request):
     ip = request.GET.get("ip")
     name = request.GET.get("name")
 
-    # model = DeviceModel.objects.get(name=model_name)
-    auth = AuthParam.objects.get(id=2)
+    auth = AuthParam.objects.get(devicemodel__name__iexact=model_name)
 
     try:
         commands = []

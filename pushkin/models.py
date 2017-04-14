@@ -27,6 +27,7 @@ class DeviceType(models.Model):
 class DeviceModel(models.Model):
     name = models.CharField(max_length=255)
     type = models.ManyToManyField(DeviceType)  # FIXME: rename to 'types'
+    auth = models.ForeignKey(AuthParam)
 
     def __str__(self):
         return self.name
