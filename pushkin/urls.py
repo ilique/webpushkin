@@ -13,8 +13,7 @@ urlpatterns = [
 
     url(r'^disable/interface/?$', views.disable_interface),
     url(r'^enable/interface/?$', views.enable_interface),
-
-    url(r'^execute/?$', views.execute_commands),
+    url(r'^ports/status/?$', views.ports_status),
 
     url(r'^$', views.index),
 ]

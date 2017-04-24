@@ -208,19 +208,24 @@ def enable_interface(request):
     return JsonResponse({'messages': result})
 
 
-@csrf_exempt
-def execute_commands(request):
-    body = json.loads(request.body.decode("utf8"))
-    auth_id = body["auth"]
-    ip = body["ip"]
-    model = body["model"]
-    commands = body["commands"]
+def ports_status(request):
+    model_name = request.GET.get("model")
+    ip = request.GET.get("ip")
 
-    auth = AuthParam.objects.get(id=auth_id)
+    auth = AuthParam.objects.get(devicemodel__name__iexact=model_name)
 
-    sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
-                         model, auth.secret)
+    try:
+        commands = []
+        cmds = CommandGroup.objects.get(name="Показать список интерфейсов", device_model__name__iexact=model_name).commands.all()
+        for cmd in cmds:
+            commands.append(cmd.text)
 
-    result = sdn.send_commands(commands)
+        sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
+                             model_name, auth.secret)
 
-    return JsonResponse({'messages': result})
+        result = sdn.send_commands(commands)
+
+    except CommandGroup.DoesNotExist:
+        result = 'Пушкин: Команда для вывода статуса портов не найдена'
+
+    return render(request, 'ports-status.html', {'result': result})
