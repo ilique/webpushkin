@@ -14,16 +14,6 @@ This is [SDN](https://en.wikipedia.org/wiki/Software-defined_networking) tool. W
 * Web demo is on [Django](https://www.djangoproject.com)
 * Multi-command select made by [sortedm2m](https://github.com/gregmuellegger/django-sortedm2m)
 
-## Installation (demo)
-
-    (optional) mkdir pushkindemo && virtualenv pushkindemo && cd pushkindemo && source bin/activate
-    pip install netmiko django django-sortedm2m
-    git clone https://github.com/ilique/webpushkin.git
-    cd webpushkin && python manage.py createsuperuser && python manage.py migrate && python manage.py runserver
-
-## Any support?
-
-Ask pushkin@digitalmanufactory.ru
 
 ***
 P.S. Why 'Pushkin'? Well, first of all he [is everything for us](https://www.google.ru/search?q=pushkin+is+our+everything), so to speak. And second, services are stored as lines of text - just as in a poem. You can even rhythm you service instructions, if you want. 
