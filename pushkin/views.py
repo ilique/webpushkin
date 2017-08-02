@@ -169,9 +169,15 @@ def disable_interface(request):
 
     try:
         commands = []
-        cmds = CommandGroup.objects.get(name="Выключить интерфейс", device_model__name__iexact=model_name).commands.all()
+        cmds = CommandGroup.objects.get(name="Выключить интерфейс",
+                                        device_model__name__iexact=model_name).commands.all()
         for cmd in cmds:
             commands.append(cmd.text.replace('$interface', name))
+
+        cmds = CommandGroup.objects.get(name="Сохранить конфигурацию",
+                                                 device_model__name__iexact=model_name).commands.all()
+        for cmd in cmds:
+            commands.append(cmd.text)
 
         sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                              model_name, auth.secret)
@@ -193,9 +199,15 @@ def enable_interface(request):
 
     try:
         commands = []
+
         cmds = CommandGroup.objects.get(name="Включить интерфейс", device_model__name__iexact=model_name).commands.all()
         for cmd in cmds:
             commands.append(cmd.text.replace('$interface', name))
+
+        cmds = CommandGroup.objects.get(name="Сохранить конфигурацию",
+                                            device_model__name__iexact=model_name).commands.all()
+        for cmd in cmds:
+            commands.append(cmd.text)
 
         sdn = PushkinNetmiko(auth.protocol, auth.port, ip, auth.login, auth.password,
                              model_name, auth.secret)
@@ -216,7 +228,8 @@ def ports_status(request):
 
     try:
         commands = []
-        cmds = CommandGroup.objects.get(name="Показать список интерфейсов", device_model__name__iexact=model_name).commands.all()
+        cmds = CommandGroup.objects.get(name="Показать список интерфейсов",
+                                        device_model__name__iexact=model_name).commands.all()
         for cmd in cmds:
             commands.append(cmd.text)
 
