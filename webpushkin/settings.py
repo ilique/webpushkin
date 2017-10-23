@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's_k70jf76o^o+eby1=(lh))$)ot@yc50suvdky2-ua!b&y$c-l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['opennms.mgmt.telros.net']
+ALLOWED_HOSTS = ['opennms.mgmt.telros.net', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -102,5 +102,4 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/'
-STATIC_ROOT = '/var/www/pushkin/sdn/pushkin/static/pushkin'
+STATIC_URL = '/static/'

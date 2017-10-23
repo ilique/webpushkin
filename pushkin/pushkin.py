@@ -308,10 +308,7 @@ class PushkinNetmiko:
             pushkin_device_mapper = self.ssh_device_models
             device['device_type'] = pushkin_device_mapper[self.device_model]
 
-            try:
-                net_connect = ConnectHandler(**device)
-            except paramiko.SSHException:
-                return False
+            net_connect = ConnectHandler(**device)
 
             return net_connect
 

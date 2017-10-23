@@ -9,6 +9,9 @@ from .forms import AuthParamForm, CommandGroupForm, ServiceForm, DeviceModelForm
 from .models import AuthParam, CommandGroup, Service, DeviceModel
 from netmiko import ConnectHandler
 
+import socket
+from paramiko.ssh_exception import SSHException
+
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -103,37 +106,53 @@ def enable_interface(request):
 
 
 def ports_status(request):
-    model_name = request.GET.get("model")
+    model = request.GET.get("model")
     ip = request.GET.get("ip")
 
-    auths = AuthParam.objects.all()
+    auths_telnet = AuthParam.objects.filter(protocol='telnet')
+    auths_ssh = AuthParam.objects.filter(protocol='ssh')
 
     result = ''
 
     try:
         commands = []
         cmds = CommandGroup.objects.get(name="Показать список интерфейсов",
-                                        device_model__name__iexact=model_name).commands.all()
+                                        device_model__name__iexact=model).commands.all()
         for cmd in cmds:
             commands.append(cmd.text)
 
-        for auth in auths:
-            if not result:
-                device = {
-                    'device_type': 'cisco_ios_telnet',
-                    'port': auth.port, 'ip': ip,
-                    'username': auth.login, 'password': auth.password,
-                    'global_delay_factor': 1
-                }
+        if model == 'cisco':
+            model = 'cisco_ios'
 
-                try:
-                    sdn = ConnectHandler(**device)
-                    for command in commands:
-                        r = sdn.send_command(command)
-                        if r:
-                            result += r
-                except ConnectionError:
-                    pass
+        model_names = [model, model+'_telnet']
+
+        for model_name in model_names:
+
+            if '_telnet' in model_name:
+                auths = auths_telnet
+            else:
+                auths = auths_ssh
+
+            for auth in auths:
+                if not result:
+                    device = {
+                        'device_type': model_name,
+                        'port': auth.port, 'ip': ip,
+                        'username': auth.login, 'password': auth.password,
+                        'global_delay_factor': 1
+                    }
+
+                    try:
+                        sdn = ConnectHandler(**device)
+                        for command in commands:
+                            r = sdn.send_command(command)
+                            if r:
+                                result += r
+                    except (ConnectionError, SSHException, socket.timeout):
+                        pass
+
+        if not result:
+            result = 'Не удалось подключиться к устройству ни по ssh ни по telnet'
 
     except CommandGroup.DoesNotExist:
         result = 'Пушкин: Команда для вывода статуса портов не найдена'
