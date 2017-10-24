@@ -42,8 +42,7 @@ def disable_interface(request):
     except CommandGroup.DoesNotExist:
         result = 'Команда выключения портов для модели {modelname} не найдена'.format(modelname=model)
 
-    # return JsonResponse({'messages': result})
-    return render(request, 'ports-status.html', {'result': result})
+    return JsonResponse({'messages': result})
 
 
 def enable_interface(request):
@@ -68,8 +67,7 @@ def enable_interface(request):
     except CommandGroup.DoesNotExist:
         result = 'Команда включения портов для модели {modelname} не найдена'.format(modelname=model)
 
-    # return JsonResponse({'messages': result})
-    return render(request, 'ports-status.html', {'result': result})
+    return JsonResponse({'messages': result})
 
 
 def ports_status(request):
