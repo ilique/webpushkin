@@ -33,7 +33,7 @@ def send_commands_to_device(commands, ip, model, is_config=False):
                 try:
                     sdn = ConnectHandler(**device)
                     if is_config:
-                        result = sdn.send_config_set(commands)
+                        result = sdn.send_config_set(config_commands=commands, exit_config_mode=False)
                     else:
                         for command in commands:
                             r = sdn.send_command(command)
